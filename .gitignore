@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+*.xlsx
+*.xls
+*.ods
+*.csv
+*.tsv
+*.json
+*.sqlite
+*.db
+*.log
+.clasp.json
+.DS_Store

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin:0; padding:22px; background:#f4f2eb; color:#272727; font:14px Arial,Helvetica,sans-serif; }
+    h1 { margin:0 0 8px; font-size:22px; }
+    p { line-height:1.45; }
+    .intro { margin:0 0 18px; color:#55534b; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:20px; align-items:start; }
+    .fields { display:grid; gap:12px; }
+    label { display:grid; gap:5px; font-weight:700; }
+    input, select { min-width:0; padding:9px 10px; border:1px solid #bcb8aa; border-radius:5px; background:#fff; font:inherit; }
+    input[type="color"] { width:100%; height:40px; padding:3px; }
+    small { color:#5a584f; font-weight:400; line-height:1.35; }
+    .preview { padding:12px; border:1px solid #d3cfbf; border-radius:8px; background:#fff; }
+    .preview-label { margin:0 0 8px; font-size:12px; font-weight:700; }
+    .sample-email { padding:22px 14px; border-radius:5px; text-align:center; }
+    .brand { display:grid; width:52px; height:52px; margin:0 auto 10px; place-items:center; border-radius:50%; font:italic bold 26px Georgia,serif; }
+    .logo { display:none; width:64px; height:64px; margin:0 auto 10px; object-fit:contain; }
+    .sample-name { margin:0 0 8px; font-size:13px; }
+    .sample-title { margin:0; font-size:18px; }
+    .status { min-height:20px; margin:14px 0 0; color:#385c2d; font-weight:700; }
+    .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; }
+    button { padding:10px 14px; border:0; border-radius:5px; background:#80651b; color:#fff; font:inherit; font-weight:700; cursor:pointer; }
+    button:disabled { opacity:.6; cursor:wait; }
+    @media (max-width:560px) {
+      body { padding:16px; }
+      .layout { grid-template-columns:1fr; }
+      .preview { order:-1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Dar de alta un negocio</h1>
+  <p class="intro">Configura la identidad que se usará en sus emails. El perfil se guardará en la hoja BusinessProfiles de este archivo.</p>
+
+  <form id="business-form">
+    <input name="businessId" type="hidden">
+    <div class="layout">
+      <div class="fields">
+        <label>Editar un perfil existente
+          <select id="business-select">
+            <option value="">Nuevo negocio</option>
+          </select>
+        </label>
+        <label>Nombre del negocio
+          <input name="businessName" maxlength="120" required placeholder="Café Demo">
+        </label>
+        <label>Email de contacto
+          <input name="contactEmail" type="email" required placeholder="Email del negocio">
+        </label>
+        <label>Dirección remitente de Gmail
+          <input name="senderAlias" type="email" required placeholder="Cuenta principal o alias autorizado">
+          <small>Debe ser la cuenta principal o un alias autorizado antes de enviar.</small>
+        </label>
+        <label>ID de la pestaña de respuestas del formulario QR
+          <input name="registrationSheetId" inputmode="numeric" pattern="[0-9]+" placeholder="Se completa al vincular el formulario">
+          <small>La pestaña de respuestas debe estar en este mismo archivo de Google Sheets.</small>
+        </label>
+        <label>ID de la pestaña de respuestas del formulario de baja
+          <input name="unsubscribeSheetId" inputmode="numeric" pattern="[0-9]+" placeholder="Opcional hasta configurar las bajas">
+          <small>También debe estar vinculada a este archivo de Google Sheets.</small>
+        </label>
+        <label>URL HTTPS del logo
+          <input name="logoUrl" type="url" placeholder="Dirección HTTPS del logo">
+          <small>Opcional. Si no hay logo, se usa la inicial del negocio.</small>
+        </label>
+        <label>Color principal
+          <input name="primaryColor" type="color" value="#80651b">
+        </label>
+        <label>Color de fondo
+          <input name="backgroundColor" type="color" value="#d9d6c5">
+        </label>
+        <label>Color de acento
+          <input name="accentColor" type="color" value="#ece9df">
+        </label>
+        <label>Instagram (opcional)
+          <input name="instagramUrl" type="url" placeholder="Dirección HTTPS de Instagram">
+        </label>
+        <label>Sitio web (opcional)
+          <input name="websiteUrl" type="url" placeholder="Dirección HTTPS del sitio">
+        </label>
+        <label>Enlace para reseñas
+          <input name="reviewUrl" type="url" required placeholder="Dirección HTTPS para reseñas">
+        </label>
+        <label>Enlace de baja de campañas
+          <input name="unsubscribeUrl" type="url" required placeholder="Dirección HTTPS para bajas">
+        </label>
+      </div>
+
+      <aside class="preview">
+        <p class="preview-label">Vista previa de marca</p>
+        <div class="sample-email" id="sample-email">
+          <div class="brand" id="brand-mark">N</div>
+          <img class="logo" id="brand-logo" alt="Logo del negocio">
+          <p class="sample-name" id="sample-name">Nombre del negocio</p>
+          <h2 class="sample-title">¡Hola, Sofía!</h2>
+        </div>
+      </aside>
+    </div>
+
+    <div class="actions">
+      <button id="save-button" type="submit">Guardar perfil</button>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </form>
+
+  <script>
+    const form = document.getElementById("business-form");
+    const sample = document.getElementById("sample-email");
+    const nameInput = form.elements.businessName;
+    const logoInput = form.elements.logoUrl;
+    const status = document.getElementById("status");
+    const saveButton = document.getElementById("save-button");
+    const businessSelect = document.getElementById("business-select");
+    const brandMark = document.getElementById("brand-mark");
+    const brandLogo = document.getElementById("brand-logo");
+    const isAppsScriptDialog = Boolean(window.google && google.script && google.script.run);
+
+    function updateBrandPreview() {
+      const name = nameInput.value.trim() || "Nombre del negocio";
+      const primary = form.elements.primaryColor.value;
+      const background = form.elements.backgroundColor.value;
+      const accent = form.elements.accentColor.value;
+      sample.style.backgroundColor = background;
+      brandMark.style.backgroundColor = accent;
+      brandMark.style.color = primary;
+      brandMark.textContent = name.charAt(0).toUpperCase();
+      document.getElementById("sample-name").textContent = name;
+
+      if (logoInput.value.trim()) {
+        brandLogo.style.display = "block";
+        brandMark.style.display = "none";
+        brandLogo.src = logoInput.value.trim();
+      } else {
+        brandLogo.removeAttribute("src");
+        brandLogo.style.display = "none";
+        brandMark.style.display = "grid";
+      }
+    }
+
+    brandLogo.onload = function() {
+      brandLogo.style.display = "block";
+      brandMark.style.display = "none";
+    };
+    brandLogo.onerror = function() {
+      brandLogo.style.display = "none";
+      brandMark.style.display = "grid";
+    };
+
+    form.addEventListener("input", updateBrandPreview);
+    updateBrandPreview();
+
+    function loadBusinessProfiles() {
+      if (!isAppsScriptDialog) {
+        status.textContent = "Vista previa local: los cambios no se guardan.";
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(function(profiles) {
+          profiles.forEach(function(profile) {
+            const option = document.createElement("option");
+            option.value = profile.businessId;
+            option.textContent = profile.businessName;
+            businessSelect.appendChild(option);
+          });
+        })
+        .withFailureHandler(function(error) {
+          status.textContent = error.message || "No se pudieron cargar los perfiles.";
+        })
+        .listBusinessProfiles();
+    }
+
+    businessSelect.addEventListener("change", function() {
+      if (!businessSelect.value) {
+        form.reset();
+        form.elements.businessId.value = "";
+        status.textContent = "Nuevo perfil";
+        updateBrandPreview();
+        return;
+      }
+
+      saveButton.disabled = true;
+      google.script.run
+        .withSuccessHandler(function(profile) {
+          Object.keys(profile).forEach(function(key) {
+            if (form.elements[key]) form.elements[key].value = profile[key] || "";
+          });
+          form.elements.businessId.value = profile.businessId;
+          status.textContent = "Editando " + profile.businessName;
+          updateBrandPreview();
+          saveButton.disabled = false;
+        })
+        .withFailureHandler(function(error) {
+          status.textContent = error.message || "No se pudo cargar el perfil.";
+          saveButton.disabled = false;
+        })
+        .getBusinessProfile(businessSelect.value);
+    });
+
+    loadBusinessProfiles();
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (!isAppsScriptDialog) {
+        status.textContent = "Para guardar, abre este formulario desde el menú MailWiz de la hoja vinculada.";
+        return;
+      }
+
+      saveButton.disabled = true;
+      status.textContent = "Guardando perfil…";
+
+      const profile = Object.fromEntries(new FormData(form).entries());
+      google.script.run
+        .withSuccessHandler(function(result) {
+          form.elements.businessId.value = result.businessId;
+          const existingOption = Array.from(businessSelect.options).find(function(option) {
+            return option.value === result.businessId;
+          });
+          if (existingOption) {
+            existingOption.textContent = result.businessName;
+          } else {
+            const option = document.createElement("option");
+            option.value = result.businessId;
+            option.textContent = result.businessName;
+            businessSelect.appendChild(option);
+          }
+          businessSelect.value = result.businessId;
+          status.textContent = "Perfil guardado: " + result.businessName + " · ID " + result.businessId;
+          saveButton.disabled = false;
+        })
+        .withFailureHandler(function(error) {
+          status.textContent = error.message || "No se pudo guardar el perfil.";
+          saveButton.disabled = false;
+        })
+        .saveBusinessProfile(profile);
+    });
+  </script>
+</body>
+</html>

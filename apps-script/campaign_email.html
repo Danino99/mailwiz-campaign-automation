@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?= subject ?></title>
+  <style>
+    @media screen and (max-width: 600px) {
+      .campaign-card { width: 100% !important; }
+      .campaign-padding { padding-left: 22px !important; padding-right: 22px !important; }
+      .campaign-title { font-size: 28px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:<?= backgroundColor ?>; font-family:Arial,Helvetica,sans-serif; color:#292929;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="<?= primaryColor ?>" style="width:100%; background-color:<?= primaryColor ?>; background-image:linear-gradient(135deg,<?= backgroundColor ?> 0%,<?= accentColor ?> 48%,<?= primaryColor ?> 100%);">
+    <tr>
+      <td align="center" style="padding:28px 14px 12px;">
+        <table role="presentation" class="campaign-card" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="width:100%; max-width:600px; background-color:#ffffff; border-radius:10px;">
+          <tr>
+            <td align="center" class="campaign-padding" style="padding:30px 36px 8px;">
+              <? if (logoUrl) { ?>
+              <img src="<?= logoUrl ?>" width="72" height="72" alt="<?= businessName ?>" style="display:block; width:72px; height:72px; margin:0 auto 12px; object-fit:contain;">
+              <? } else { ?>
+              <table role="presentation" width="72" height="72" cellspacing="0" cellpadding="0" border="0" bgcolor="<?= accentColor ?>" style="width:72px; height:72px; border-radius:50%; background-color:<?= accentColor ?>;">
+                <tr><td align="center" valign="middle" style="color:<?= primaryColor ?>; font-family:Georgia,'Times New Roman',serif; font-size:36px; font-style:italic; font-weight:bold;"><?= brandInitial ?></td></tr>
+              </table>
+              <? } ?>
+              <p style="margin:0; color:#68645b; font-size:13px; font-weight:bold; letter-spacing:1px;"><?= businessName ?></p>
+              <h1 class="campaign-title" style="margin:20px 0 18px; color:#272727; font-size:32px; line-height:1.2; text-align:center;">
+                <?= subject ?>
+              </h1>
+            </td>
+          </tr>
+          <tr>
+            <td class="campaign-padding" style="padding:0 36px 12px; font-size:16px; line-height:1.55; white-space:pre-line;">
+              <?= body ?>
+            </td>
+          </tr>
+          <? if (conditions) { ?>
+          <tr>
+            <td class="campaign-padding" style="padding:0 36px 14px; color:#565656; font-size:13px; font-style:italic; line-height:1.45; white-space:pre-line;">
+              <?= conditions ?>
+            </td>
+          </tr>
+          <? } ?>
+          <? if (footer) { ?>
+          <tr>
+            <td class="campaign-padding" style="padding:2px 36px 12px; font-size:15px; line-height:1.5; text-align:center; white-space:pre-line;">
+              <?= footer ?>
+            </td>
+          </tr>
+          <? } ?>
+          <? if (instagramUrl || websiteUrl) { ?>
+          <tr>
+            <td class="campaign-padding" style="padding:8px 32px 22px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#080808" style="width:100%; background-color:#080808; border-radius:8px;">
+                <tr>
+                  <td align="center" style="padding:16px 10px; color:#ffffff; font-size:13px;">
+                    <? if (instagramUrl) { ?><a href="<?= instagramUrl ?>" style="margin:0 10px; color:#ffffff; text-decoration:none;">Instagram</a><? } ?>
+                    <? if (websiteUrl) { ?><a href="<?= websiteUrl ?>" style="margin:0 10px; color:#ffffff; text-decoration:none;">Sitio web</a><? } ?>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <? } ?>
+        </table>
+        <p style="margin:14px 0 0; font-size:13px; line-height:1.4;">
+          <a href="<?= unsubscribeUrl ?>" style="color:<?= primaryColor ?>; text-decoration:underline;">Cancelar suscripción</a>
+        </p>
+      </td>
+    </tr>
+  </table>
+  <? if (trackingPixelUrl) { ?>
+  <img src="<?= trackingPixelUrl ?>" width="1" height="1" alt="" style="display:block; width:1px; height:1px; max-height:1px; border:0;">
+  <? } ?>
+</body>
+</html>

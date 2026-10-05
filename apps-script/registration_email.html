@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?= isEligible ? "Confirmación de Registro" : "No elegible para nuevo beneficio" ?></title>
+  <style>
+    @media screen and (max-width: 600px) {
+      .email-card { width: 100% !important; }
+      .email-padding { padding-left: 22px !important; padding-right: 22px !important; }
+      .email-title { font-size: 30px !important; }
+      .benefit-code { font-size: 34px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:<?= backgroundColor ?>; font-family:Arial,Helvetica,sans-serif; color:#292929;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="<?= primaryColor ?>" style="width:100%; background-color:<?= primaryColor ?>; background-image:linear-gradient(135deg,<?= backgroundColor ?> 0%,<?= accentColor ?> 48%,<?= primaryColor ?> 100%);">
+    <tr>
+      <td align="center" style="padding:28px 14px;">
+        <table role="presentation" class="email-card" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="width:100%; max-width:600px; background-color:#ffffff; border-radius:10px;">
+          <tr>
+            <td align="center" class="email-padding" style="padding:34px 36px 8px;">
+              <? if (logoUrl) { ?>
+              <img src="<?= logoUrl ?>" width="86" height="86" alt="<?= businessName ?>" style="display:block; width:86px; height:86px; margin:0 auto 12px; object-fit:contain;">
+              <? } else { ?>
+              <table role="presentation" width="86" height="86" cellspacing="0" cellpadding="0" border="0" bgcolor="<?= accentColor ?>" style="width:86px; height:86px; border-radius:50%; background-color:<?= accentColor ?>;">
+                <tr><td align="center" valign="middle" style="color:<?= primaryColor ?>; font-family:Georgia,'Times New Roman',serif; font-size:42px; font-style:italic; font-weight:bold;"><?= brandInitial ?></td></tr>
+              </table>
+              <? } ?>
+              <p style="margin:0; color:#68645b; font-size:13px; font-weight:bold; letter-spacing:1px;"><?= businessName ?></p>
+              <h1 class="email-title" style="margin:20px 0 22px; color:#272727; font-size:36px; line-height:1.15; text-align:center;">
+                ¡Hola, <?= customerName ?>!
+              </h1>
+            </td>
+          </tr>
+
+          <? if (isEligible) { ?>
+          <tr>
+            <td class="email-padding" style="padding:0 36px 8px; font-size:16px; line-height:1.55;">
+              Agradecemos tu registro, a continuación te dejamos las instrucciones para que puedas cobrar tu beneficio:
+            </td>
+          </tr>
+          <tr>
+            <td class="email-padding" style="padding:0 36px 4px;">
+              <ol style="margin:10px 0 20px; padding-left:22px; font-size:16px; font-weight:bold; line-height:1.55;">
+                <li style="padding-bottom:10px;">Deja tu opinión positiva <a href="<?= reviewUrl ?>" style="color:<?= primaryColor ?>; text-decoration:underline;">aquí</a>.</li>
+                <li>Muestra tu código único en caja.</li>
+              </ol>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-padding" style="padding:0 32px 20px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="<?= primaryColor ?>" style="width:100%; background-color:<?= primaryColor ?>; background-image:linear-gradient(90deg,<?= primaryColor ?>,<?= accentColor ?> 50%,<?= primaryColor ?>);">
+                <tr>
+                  <td align="center" class="benefit-code" style="padding:14px 8px; color:#171717; font-size:42px; font-weight:bold; letter-spacing:4px;">
+                    <?= benefitCode ?>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <? } else { ?>
+          <tr>
+            <td class="email-padding" style="padding:0 36px 8px; font-size:16px; line-height:1.55;">
+              Notamos que ya recibiste un beneficio de bienvenida anteriormente, por eso no puedes volver a recibirlo.
+            </td>
+          </tr>
+          <? } ?>
+
+          <? if (showMarketingLinks) { ?>
+          <tr>
+            <td class="email-padding" style="padding:4px 36px 0; font-size:16px; line-height:1.55; text-align:center;">
+              Síguenos para recibir promociones y beneficios todas las semanas.
+            </td>
+          </tr>
+          <? if (instagramUrl || websiteUrl) { ?>
+          <tr>
+            <td class="email-padding" style="padding:20px 32px 24px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#080808" style="width:100%; background-color:#080808; border-radius:8px;">
+                <tr>
+                  <td align="center" style="padding:17px 10px; color:#ffffff; font-size:13px;">
+                    <? if (instagramUrl) { ?><a href="<?= instagramUrl ?>" style="margin:0 10px; color:#ffffff; text-decoration:none;">Instagram</a><? } ?>
+                    <? if (websiteUrl) { ?><a href="<?= websiteUrl ?>" style="margin:0 10px; color:#ffffff; text-decoration:none;">Sitio web</a><? } ?>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <? } else { ?>
+          <tr><td style="padding-bottom:22px;"></td></tr>
+          <? } ?>
+          <? } ?>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

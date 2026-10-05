@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin:0; padding:22px; background:#f4f2eb; color:#272727; font:14px Arial,Helvetica,sans-serif; }
+    h1 { margin:0 0 8px; font-size:22px; }
+    p { color:#55534b; line-height:1.45; }
+    form { display:grid; gap:14px; margin-top:20px; }
+    label { display:grid; gap:6px; font-weight:700; }
+    select, input { min-width:0; padding:10px; border:1px solid #bcb8aa; border-radius:5px; background:#fff; font:inherit; }
+    input { font-size:20px; letter-spacing:2px; text-transform:uppercase; }
+    button { padding:11px 14px; border:0; border-radius:5px; background:#80651b; color:#fff; font:inherit; font-weight:700; cursor:pointer; }
+    button:disabled { opacity:.6; cursor:wait; }
+    .status { min-height:22px; margin:2px 0 0; font-weight:700; }
+  </style>
+</head>
+<body>
+  <h1>Canje de beneficio</h1>
+  <p>Selecciona el negocio e ingresa el código que muestra el cliente. Un código se puede canjear una sola vez.</p>
+  <form id="redeem-form">
+    <label>Negocio
+      <select name="businessId" id="business-id" required>
+        <option value="">Cargando negocios…</option>
+      </select>
+    </label>
+    <label>Código
+      <input name="benefitCode" required autocomplete="off" placeholder="#SD3">
+    </label>
+    <button id="redeem-button" type="submit">Validar y marcar como canjeado</button>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </form>
+  <script>
+    const select = document.getElementById("business-id");
+    const form = document.getElementById("redeem-form");
+    const button = document.getElementById("redeem-button");
+    const status = document.getElementById("status");
+    const isAppsScriptDialog = Boolean(window.google && google.script && google.script.run);
+
+    if (isAppsScriptDialog) {
+      google.script.run
+        .withSuccessHandler(function(profiles) {
+          select.innerHTML = '<option value="">Selecciona un negocio</option>';
+          profiles.forEach(function(profile) {
+            const option = document.createElement("option");
+            option.value = profile.businessId;
+            option.textContent = profile.businessName;
+            select.appendChild(option);
+          });
+          if (!profiles.length) status.textContent = "Primero crea un perfil de negocio.";
+        })
+        .withFailureHandler(function(error) {
+          status.textContent = error.message || "No se pudieron cargar los negocios.";
+        })
+        .listBusinessProfiles();
+    } else {
+      select.innerHTML = '<option value="">Vista previa local</option>';
+      status.textContent = "La vista local no valida ni canjea códigos.";
+    }
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (!isAppsScriptDialog) {
+        status.textContent = "Abre esta ventana desde el menú MailWiz de la hoja vinculada.";
+        return;
+      }
+      if (!select.value) {
+        status.textContent = "Selecciona un negocio.";
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = "Validando…";
+      google.script.run
+        .withSuccessHandler(function(result) {
+          status.textContent = result.status === "REDEEMED"
+            ? "Código válido. Beneficio marcado como canjeado."
+            : "Este código ya fue canjeado.";
+          button.disabled = false;
+          if (result.status === "REDEEMED") form.elements.benefitCode.value = "";
+        })
+        .withFailureHandler(function(error) {
+          status.textContent = error.message || "No se pudo validar el código.";
+          button.disabled = false;
+        })
+        .redeemBenefitCode(select.value, form.elements.benefitCode.value);
+    });
+  </script>
+</body>
+</html>

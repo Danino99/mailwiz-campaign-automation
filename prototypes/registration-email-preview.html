@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Prototipo visual estático de emails de registro MailWiz con datos ficticios.">
+  <title>MailWiz — Prototipo de emails de registro</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #272727;
+      background: #f1efe7;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      padding: 36px 20px 56px;
+    }
+
+    .page-header {
+      max-width: 1180px;
+      margin: 0 auto 28px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #75601d;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 4vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    .intro {
+      max-width: 720px;
+      margin: 12px 0 0;
+      color: #55534b;
+      line-height: 1.55;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      max-width: 1180px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .preview {
+      min-width: 0;
+    }
+
+    .preview-label {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .email-subject {
+      margin: 0 0 10px;
+      color: #45433e;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .status {
+      padding: 5px 9px;
+      border: 1px solid #d4cfbc;
+      border-radius: 999px;
+      background: #fffdf8;
+      color: #62511c;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .email-canvas {
+      min-height: 590px;
+      padding: 34px 24px;
+      border: 1px solid #d8d2bd;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #d9d6c5 0%, #b9ad7d 48%, #80651b 100%);
+    }
+
+    .email-card {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 32px 34px 22px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgb(30 26 13 / 12%);
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 86px;
+      height: 86px;
+      margin: 0 auto 22px;
+      place-items: center;
+      border-radius: 50%;
+      background: #ece9df;
+      color: #80651b;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.7rem;
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .email-title {
+      margin: 0 0 20px;
+      text-align: center;
+      font-size: clamp(1.8rem, 4vw, 2.35rem);
+      line-height: 1.15;
+    }
+
+    .brand-name {
+      margin: -12px 0 16px;
+      color: #68645b;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .email-copy {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .email-copy + .email-copy {
+      margin-top: 18px;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin: 20px 0 22px;
+      padding-left: 22px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .review-link {
+      color: #1763b1;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .code-band {
+      margin: 24px -4px 20px;
+      padding: 16px 12px;
+      background: linear-gradient(90deg, #80651b, #e0ddcf 50%, #80651b);
+      color: #171717;
+      text-align: center;
+      font-size: clamp(1.8rem, 5vw, 2.7rem);
+      font-weight: 800;
+      letter-spacing: 0.09em;
+    }
+
+    .social-bar {
+      display: flex;
+      min-height: 56px;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      margin-top: 24px;
+      border-radius: 8px;
+      background: #080808;
+    }
+
+    .social-bar a {
+      display: inline-flex;
+      min-width: 36px;
+      min-height: 36px;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .preview-note {
+      max-width: 1180px;
+      margin: 24px auto 0;
+      padding: 14px 16px;
+      border-left: 4px solid #80651b;
+      background: #fffdf8;
+      color: #514f47;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 24px 12px 36px;
+      }
+
+      .preview-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .email-canvas {
+        min-height: 0;
+        padding: 20px 12px;
+      }
+
+      .email-card {
+        padding: 28px 22px 18px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .email-card {
+        padding: 24px 16px 16px;
+      }
+
+      .brand-mark {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <p class="eyebrow">MailWiz · prototipo personal</p>
+    <h1>Emails de confirmación de registro</h1>
+    <p class="intro">Vista adaptable de los dos resultados posibles del formulario de registro, con contenido de demostración.</p>
+  </header>
+
+  <main class="preview-grid">
+    <section class="preview" aria-labelledby="eligible-label">
+      <h2 class="preview-label" id="eligible-label">
+        <span>Registro elegible</span>
+        <span class="status">Vista de ejemplo</span>
+      </h2>
+      <p class="email-subject">Asunto: Confirmación de Registro</p>
+      <div class="email-canvas">
+        <article class="email-card">
+          <div class="brand-mark" aria-label="Marca de ejemplo">C</div>
+          <p class="brand-name">Café Demo</p>
+          <h3 class="email-title">¡Hola, Sofía!</h3>
+          <p class="email-copy">Agradecemos tu registro. A continuación te dejamos las instrucciones para que puedas cobrar tu beneficio:</p>
+          <ol class="steps">
+            <li>Deja tu opinión positiva <a class="review-link" href="#prototype-only">aquí</a>.</li>
+            <li>Muestra tu código único en caja.</li>
+          </ol>
+          <div class="code-band" aria-label="Código de demostración">#SD3</div>
+          <p class="email-copy">Síguenos para enterarte de nuevas promociones y beneficios.</p>
+          <nav class="social-bar" aria-label="Enlaces de ejemplo">
+            <a href="#prototype-only" aria-label="Instagram de ejemplo">ig</a>
+            <a href="#prototype-only" aria-label="Sitio web de ejemplo">web</a>
+          </nav>
+        </article>
+      </div>
+    </section>
+
+    <section class="preview" aria-labelledby="ineligible-label">
+      <h2 class="preview-label" id="ineligible-label">
+        <span>Beneficio ya utilizado</span>
+        <span class="status">Vista de ejemplo</span>
+      </h2>
+      <p class="email-subject">Asunto: No elegible para nuevo beneficio</p>
+      <div class="email-canvas">
+        <article class="email-card">
+          <div class="brand-mark" aria-label="Marca de ejemplo">C</div>
+          <p class="brand-name">Café Demo</p>
+          <h3 class="email-title">¡Hola, Sofía!</h3>
+          <p class="email-copy">Notamos que ya recibiste un beneficio de bienvenida anteriormente, por eso no puedes volver a recibirlo.</p>
+          <p class="email-copy">Síguenos para recibir promociones y beneficios todas las semanas.</p>
+          <nav class="social-bar" aria-label="Enlaces de ejemplo">
+            <a href="#prototype-only" aria-label="Instagram de ejemplo">ig</a>
+            <a href="#prototype-only" aria-label="Sitio web de ejemplo">web</a>
+          </nav>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <aside class="preview-note" id="prototype-only">
+    Vista de demostración con datos ficticios; no está conectada a Google Forms ni envía emails.
+  </aside>
+</body>
+</html>
