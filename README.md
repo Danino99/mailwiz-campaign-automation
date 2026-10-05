@@ -56,8 +56,9 @@ I explain the workflow in more detail in [`docs/workflow.md`](docs/workflow.md),
 with implementation notes in [`docs/benefit-ledger-flow.md`](docs/benefit-ledger-flow.md)
 and [`docs/campaign-email-flow.md`](docs/campaign-email-flow.md).
 
-I left a responsive HTML/CSS preview of the two registration-email states at
-[`prototypes/registration-email-preview.html`](prototypes/registration-email-preview.html),
+I left a responsive HTML/CSS preview of the two registration-email states live at
+https://danino99.github.io/mailwiz-campaign-automation/prototypes/registration-email-preview.html
+(source: [`prototypes/registration-email-preview.html`](prototypes/registration-email-preview.html)),
 and the Apps Script templates and helpers under [`apps-script/`](apps-script/).
 
 ## Interesting design choices
